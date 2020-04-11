@@ -4,7 +4,7 @@ namespace App\Models\Schools;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Schools\{Group,Assistance,Schedule,Note};
+use App\Models\Schools\{Group,Assistance,Schedule,Note,Competencie};
 use App\Models\People\{People};
 
 class Subject extends Model
@@ -41,5 +41,10 @@ class Subject extends Model
     public function notes()
     {
         return $this->hasMany(Note::class);
+    }
+
+    public function competencies()
+    {
+        return $this->hasMany(Competencie::class);
     }
 }

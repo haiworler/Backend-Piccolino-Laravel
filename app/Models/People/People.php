@@ -14,6 +14,7 @@ class People extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
+        'id',
         'names',
         'surnames',
         'type_document_id',
@@ -44,7 +45,7 @@ class People extends Model
 
     public function town()
     {
-        return $this->belongsTo(Town::class);
+        return $this->belongsTo(Town::class,'birth_town_id');
     }
 
     public function gender()

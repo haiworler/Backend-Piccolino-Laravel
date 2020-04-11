@@ -15,7 +15,8 @@ class TypePeopleController extends Controller
      */
     public function index()
     {
-        //
+        $typePeoples = TypePeople::all()->where('enabled', '1');
+        return $this->showAll($typePeoples);
     }
 
     /**

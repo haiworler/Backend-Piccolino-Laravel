@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\MasterTables;
+namespace App\Http\Controllers\Schools;
 
 use App\Http\Controllers\Controller;
-use App\Models\MasterTables\Occupation;
+use App\Models\Schools\Competencie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Exception;
 
-class OccupationController extends Controller
+class CompetencieController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +18,7 @@ class OccupationController extends Controller
      */
     public function index()
     {
-        $occupations = Occupation::all()->where('enabled', '1');
-        return $this->showAll($occupations);
+        //
     }
 
     /**
@@ -43,10 +45,10 @@ class OccupationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\MasterTables\Occupation  $occupation
+     * @param  \App\Models\Schools\Competencie  $competencie
      * @return \Illuminate\Http\Response
      */
-    public function show(Occupation $occupation)
+    public function show(Competencie $competencie)
     {
         //
     }
@@ -54,10 +56,10 @@ class OccupationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\MasterTables\Occupation  $occupation
+     * @param  \App\Models\Schools\Competencie  $competencie
      * @return \Illuminate\Http\Response
      */
-    public function edit(Occupation $occupation)
+    public function edit(Competencie $competencie)
     {
         //
     }
@@ -66,10 +68,10 @@ class OccupationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\MasterTables\Occupation  $occupation
+     * @param  \App\Models\Schools\Competencie  $competencie
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Occupation $occupation)
+    public function update(Request $request, Competencie $competencie)
     {
         //
     }
@@ -77,11 +79,17 @@ class OccupationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\MasterTables\Occupation  $occupation
+     * @param  \App\Models\Schools\Competencie  $competencie
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Occupation $occupation)
+    public function destroy($id)
     {
-        //
+        try {
+            $competencie = Competencie::find($id);
+            $competencie = $competencie->delete();
+          } catch (Exception $e) {
+            return ($this->errorResponse($e->getMessage(), 422));
+          }
+          return ($this->successResponse($competencie, 200));
     }
 }

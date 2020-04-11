@@ -15,7 +15,8 @@ class TypeDocumentController extends Controller
      */
     public function index()
     {
-        //
+        $typeDocuments = TypeDocument::all()->where('enabled', '1');
+        return $this->showAll($typeDocuments);
     }
 
     /**

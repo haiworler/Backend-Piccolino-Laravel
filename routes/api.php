@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 include_once __DIR__ . '/security/routes.php';
 include_once __DIR__ . '/masterTable/routes.php';
 include_once __DIR__ . '/schools/routes.php';
+include_once __DIR__ . '/people/routes.php';
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

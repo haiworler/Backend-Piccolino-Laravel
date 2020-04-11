@@ -15,7 +15,8 @@ class GenderController extends Controller
      */
     public function index()
     {
-        //
+        $genders = Gender::all()->where('enabled', '1');
+        return $this->showAll($genders);
     }
 
     /**
