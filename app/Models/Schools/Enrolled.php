@@ -17,7 +17,7 @@ class Enrolled extends Model
         'people_id',
         'code',
         'headquarter_id',
-        'cost_enrolled_id',
+        'cost',
         'semester_id',
         'observations',
         'grade_id',
@@ -34,10 +34,10 @@ class Enrolled extends Model
         return $this->belongsTo(Headquarter::class);
     }
 
-    public function costEnrolled()
-    {
-        return $this->belongsTo(CostEnrolled::class);
-    }
+    // public function costEnrolled()
+    // {
+    //     return $this->belongsTo(CostEnrolled::class);
+    // }
 
     public function semester()
     {

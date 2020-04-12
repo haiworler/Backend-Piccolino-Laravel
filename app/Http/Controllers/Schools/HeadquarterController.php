@@ -18,7 +18,8 @@ class HeadquarterController extends Controller
      */
     public function index()
     {
-        //
+        $headquarters = Headquarter::all()->where('enabled', '1');
+        return $this->showAll($headquarters);
     }
 
     /**

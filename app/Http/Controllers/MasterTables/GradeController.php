@@ -5,6 +5,9 @@ namespace App\Http\Controllers\MasterTables;
 use App\Http\Controllers\Controller;
 use App\Models\MasterTables\Grade;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class GradeController extends Controller
 {
@@ -15,7 +18,8 @@ class GradeController extends Controller
      */
     public function index()
     {
-        //
+        $grades = Grade::where('enabled', '1')->get();
+        return $this->showAll($grades);
     }
 
     /**
@@ -36,7 +40,28 @@ class GradeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required'
+
+        ]);
+        $cammbioNombres = array(
+            'name' => 'Nombre del grado',
+        );
+
+        $validator->setAttributeNames($cammbioNombres);
+        if ($validator->fails()) {
+            return ($this->errorResponse($validator->errors(), 422));
+        }
+        try {
+            $grade = new Grade();
+            DB::beginTransaction();
+            $grade->create($request->all());
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return ($this->errorResponse('Se presento un error en el sistema', 422));
+        }
+        return ($this->showWithRelatedModels($grade, 200));
     }
 
     /**
@@ -70,7 +95,15 @@ class GradeController extends Controller
      */
     public function update(Request $request, Grade $grade)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $grade->update($request->all());
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return ($this->errorResponse('Se presento un error en el sistema', 422));
+        }
+        return ($this->showWithRelatedModels($grade, 200));
     }
 
     /**
@@ -81,6 +114,22 @@ class GradeController extends Controller
      */
     public function destroy(Grade $grade)
     {
-        //
+        try {
+            $grade->delete();
+        } catch (Exception $e) {
+            return ($this->errorResponse($e->getMessage(), 422));
+        }
+        return ($this->successResponse($grade, 200));
+    }
+
+    /**
+     * Para el listar de los grados
+     */
+    public function dataTable(Request $request)
+    {
+        $grades = Grade::orWhere('name', 'like', '%' . $request->term . '%')
+            ->paginate($request->limit)
+            ->toArray();
+        return $this->showDatatable($grades);
     }
 }

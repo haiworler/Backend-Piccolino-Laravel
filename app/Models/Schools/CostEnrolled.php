@@ -18,8 +18,8 @@ class CostEnrolled extends Model
         'enabled'
     ];
 
-    public function enrolleds()
-    {
-        return $this->hasMany(Enrolled::class);
-    }
+    // public function enrolleds()
+    // {
+    //     return $this->hasMany(Enrolled::class);
+    // }
 }

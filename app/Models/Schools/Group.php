@@ -13,7 +13,7 @@ class Group extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'code',
+        'name',
         'headquarter_id',
         'semester_id',
         'people_id',

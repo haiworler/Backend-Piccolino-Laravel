@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Schools;
 use App\Http\Controllers\Controller;
 use App\Models\Schools\Semester;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class SemesterController extends Controller
 {
@@ -15,7 +18,8 @@ class SemesterController extends Controller
      */
     public function index()
     {
-        //
+        $semesters = Semester::all()->where('enabled', '1');
+        return $this->showAll($semesters);
     }
 
     /**
@@ -36,7 +40,32 @@ class SemesterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'start_date' => 'required',
+            'code' => 'required|unique:subjects',
+            'end_date' => 'required',
+            'cuts'=> 'required'
+
+        ]);
+        $cammbioNombres = array(
+            'code' => 'Nombre de la signatura',
+        );
+
+        $validator->setAttributeNames($cammbioNombres);
+        if ($validator->fails()) {
+            return ($this->errorResponse($validator->errors(), 422));
+        }
+        try {
+            $semester = new Semester();
+            DB::beginTransaction();
+            $semester = $semester->create($request->all());
+            $semester->cuts()->attach(Array_values($request->get('cuts')));
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return ($this->errorResponse($e->getMessage() . 'Se presento un error en el sistema', 422));
+        }
+        return ($this->showWithRelatedModels($semester, 200));
     }
 
     /**
@@ -70,7 +99,16 @@ class SemesterController extends Controller
      */
     public function update(Request $request, Semester $semester)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $semester->update($request->all());
+            $semester->cuts()->sync(Array_values($request->get('cuts')));
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return ($this->errorResponse('Se presento un error en el sistema', 422));
+        }
+        return ($this->showWithRelatedModels($semester, 200));
     }
 
     /**
@@ -81,6 +119,34 @@ class SemesterController extends Controller
      */
     public function destroy(Semester $semester)
     {
-        //
+        try {
+            $semester->delete();
+        } catch (Exception $e) {
+            return ($this->errorResponse($e->getMessage(), 422));
+        }
+        return ($this->successResponse($semester, 200));
+    }
+
+    /**
+     * Para el listar de los semestres
+     */
+    public function dataTable(Request $request)
+    {
+        $subjects = Semester::with('cuts')->where('code', 'like', '%' . $request->term . '%')
+            ->paginate($request->limit)
+            ->toArray();
+        return $this->showDatatable($subjects);
+    }
+
+      /**
+     * 
+     */
+    public function dependences()
+    {
+        $controllers = [
+            'MasterTables\CutController' => ['cuts', 'index'],
+        ];
+        $response = $this->jsonResource($controllers);
+        return $response;
     }
 }

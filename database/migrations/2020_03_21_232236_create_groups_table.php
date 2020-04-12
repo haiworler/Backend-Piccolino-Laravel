@@ -15,12 +15,11 @@ class CreateGroupsTable extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code');
+            $table->string('name');
             $table->unsignedBigInteger('headquarter_id');
             $table->unsignedBigInteger('semester_id');
             $table->unsignedBigInteger('people_id')->nullable();//Persona Responsable
             $table->boolean('enabled')->default(true);
-            $table->softDeletes();
             $table->timestamps();
         });
         

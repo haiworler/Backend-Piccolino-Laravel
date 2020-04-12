@@ -16,9 +16,9 @@ class CreateEnrolledsTable extends Migration
         Schema::create('enrolleds', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('people_id');
-            $table->string('code');
+            $table->string('code')->nullable();
             $table->unsignedBigInteger('headquarter_id');
-            $table->unsignedBigInteger('cost_enrolled_id');
+            $table->decimal('cost',30,2);
             $table->unsignedBigInteger('semester_id');
             $table->text('observations')->nullable();
             $table->unsignedBigInteger('grade_id');
@@ -29,7 +29,7 @@ class CreateEnrolledsTable extends Migration
         Schema::table('enrolleds', function (Blueprint $table) {
             $table->foreign('people_id')->references('id')->on('people');
             $table->foreign('headquarter_id')->references('id')->on('headquarters');
-            $table->foreign('cost_enrolled_id')->references('id')->on('cost_enrolleds');
+          //  $table->foreign('cost_enrolled_id')->references('id')->on('cost_enrolleds');
             $table->foreign('semester_id')->references('id')->on('semesters');
             $table->foreign('grade_id')->references('id')->on('grades');
         });

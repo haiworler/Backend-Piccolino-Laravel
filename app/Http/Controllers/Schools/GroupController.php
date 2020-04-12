@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Schools;
 
 use App\Http\Controllers\Controller;
-use App\Models\Schools\Group;
+use App\Models\Schools\{Group, Enrolled};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Exception;
+use App\Models\People\{People};
 
 class GroupController extends Controller
 {
@@ -15,7 +19,8 @@ class GroupController extends Controller
      */
     public function index()
     {
-        //
+        $groups = Group::all()->where('enabled', '1');
+        return $this->showAll($groups);
     }
 
     /**
@@ -36,7 +41,30 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $valid = $this->SpecialValidation($request, 'store');
+        if ($valid['exist']) {
+            return ($this->errorResponse('El grupo ya se encuentra creado para el semestre indicado', 422));
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'headquarter_id' => 'required',
+            'semester_id' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return ($this->errorResponse($validator->errors(), 422));
+        }
+        try {
+            $group = new Group();
+            DB::beginTransaction();
+            $group->create($request->all());
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return ($this->errorResponse('Se presento un error en el sistema', 422));
+        }
+        return ($this->showWithRelatedModels($group, 200));
     }
 
     /**
@@ -70,7 +98,21 @@ class GroupController extends Controller
      */
     public function update(Request $request, Group $group)
     {
-        //
+        try {
+            if ($group->name != $request['name'] || $group->semester_id != $request['semester_id']) {
+                $valid = $this->SpecialValidation($request, 'store');
+                if ($valid['exist']) {
+                    return ($this->errorResponse('El grupo ya se encuentra creado para el semestre indicado', 422));
+                }
+            }
+            DB::beginTransaction();
+            $group->update($request->all());
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return ($this->errorResponse('Se presento un error en el sistema', 422));
+        }
+        return ($this->showWithRelatedModels($group, 200));
     }
 
     /**
@@ -81,6 +123,138 @@ class GroupController extends Controller
      */
     public function destroy(Group $group)
     {
-        //
+        try {
+            $group->delete();
+        } catch (Exception $e) {
+            return ($this->errorResponse($e->getMessage(), 422));
+        }
+        return ($this->successResponse($group, 200));
+    }
+
+    /**
+     * Para el listar de los matrículas
+     */
+    public function dataTable(Request $request)
+    {
+        $groups = Group::with('people', 'headquarter', 'semester')
+            ->orWhereHas('people', function ($query) use ($request) {
+                return $query->where('names', 'like', '%' . $request->term . '%');
+            })
+            ->orWhereHas('headquarter', function ($query) use ($request) {
+                return $query->where('name', 'like', '%' . $request->term . '%');
+            })
+            ->orWhereHas('semester', function ($query) use ($request) {
+                return $query->where('code', 'like', '%' . $request->term . '%');
+            })
+            ->paginate($request->limit)
+            ->toArray();
+        return $this->showDatatable($groups);
+    }
+
+    /**
+     * 
+     */
+    public function dependences()
+    {
+        $controllers = [
+            'Schools\HeadquarterController' => ['headquarters', 'index'],
+            'Schools\SemesterController' => ['semesters', 'index'],
+        ];
+        $response = $this->jsonResource($controllers);
+        return $response;
+    }
+
+
+    /**
+     * 
+     */
+    public function getTeacher(Request $request)
+    {
+
+        $people = People::with('typeDocument', 'town', 'gender', 'neighborhood', 'occupation', 'typePeople')
+            ->whereIn('type_people_id', [4, 5])->where('enabled', 1);
+        $people->where('document_number', 'like', '%' . $request->term . '%');
+        $Query = $people->paginate($request->limit)
+            ->toArray();
+        return $Query;
+    }
+
+
+    /**
+     * Se encarga de validar que ya no este registrado la unidad de medida. 
+     */
+    public function SpecialValidation($request = null, $tipo = null)
+    {
+        try {
+            $group = Group::where('semester_id', $request['semester_id'])->where('name', 'like', '%' . $request['name'] . '%')->first();
+            if ($group) {
+                $validate['exist'] = true;
+                return $validate;
+            }
+            $validate['exist'] = false;
+            return $validate;
+        } catch (Exception $e) {
+            return ($this->errorResponse($e->getMessage(), 422));
+        }
+    }
+
+    /**
+     * Obtiene la lista de los estudiantes pertenecientes al grupo
+     */
+    public function groupStudentList(Request $request, $id)
+    {
+        $studentList = Group::with('enrolleds.people')->where('id', $id)
+            ->first();
+        return  $studentList;
+    }
+
+    /**
+     * Remove el alumno del grupo
+     */
+    public function removeStudent(Request $request, $id)
+    {
+        try {
+            $group = Group::find($id);
+            $group->enrolleds()->detach($request['enrolled_id']);
+        } catch (Exception $e) {
+            return ($this->errorResponse($e->getMessage(), 422));
+        }
+        return ($this->successResponse($group, 200));
+    }
+
+    /**
+     * 
+     */
+    public function studentList(Request $request, $id)
+    {
+        $Query = Enrolled::with('people')
+            ->where('enabled', 1)
+            ->where('semester_id', $request['semester_id']);
+        if (count($request->get('enrolleds'))) {
+            foreach ($request->get('enrolleds') as $enrolled_id) {
+                $Query->where('id', '<>', $enrolled_id);
+            }
+        }
+        $enrolleds =  $Query->get();
+        return  $enrolleds;
+    }
+
+
+    /**
+     * Asigna los estudiantes selecionado sl grupo indicado
+     */
+    public function assignStudentsGroup(Request $request)
+    {
+
+        try {
+            DB::beginTransaction();
+            $group = Group::find($request['group_id']);
+            $group->enrolleds()->attach(Array_values($request->get('students')));
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return ($this->errorResponse($e->getMessage() . 'Se presento un error en el sistema', 422));
+        }
+        return ($this->showWithRelatedModels($group, 200));
     }
 }

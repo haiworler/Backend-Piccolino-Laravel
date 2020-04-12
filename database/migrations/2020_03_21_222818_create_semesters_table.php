@@ -17,8 +17,8 @@ class CreateSemestersTable extends Migration
             $table->bigIncrements('id');
             $table->date('start_date');
             $table->date('end_date');
-            $table->text('observations');
-            $table->string('code');
+            $table->text('observations')->nullable();
+            $table->string('code')->nullable();
             $table->boolean('enabled')->default(true);
             $table->softDeletes();
             $table->timestamps();

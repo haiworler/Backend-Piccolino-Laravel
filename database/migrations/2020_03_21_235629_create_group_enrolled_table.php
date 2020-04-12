@@ -13,7 +13,7 @@ class CreateGroupEnrolledTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_enrolled', function (Blueprint $table) {
+        Schema::create('enrolled_group', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('group_id');
             $table->unsignedBigInteger('enrolled_id');
@@ -22,7 +22,7 @@ class CreateGroupEnrolledTable extends Migration
             $table->timestamps();
         });
 
-        Schema::table('group_enrolled', function (Blueprint $table) {
+        Schema::table('enrolled_group', function (Blueprint $table) {
             $table->foreign('group_id')->references('id')->on('groups');
             $table->foreign('enrolled_id')->references('id')->on('enrolleds');
         });
