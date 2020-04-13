@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCostEnrolledsTable extends Migration
+class CreateDaysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateCostEnrolledsTable extends Migration
      */
     public function up()
     {
-        Schema::create('cost_enrolleds', function (Blueprint $table) {
+        Schema::create('days', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->decimal('value');
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->string('name');
             $table->boolean('enabled')->default(true);
             $table->softDeletes();
             $table->timestamps();
@@ -31,6 +29,6 @@ class CreateCostEnrolledsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cost_enrolleds');
+        Schema::dropIfExists('days');
     }
 }

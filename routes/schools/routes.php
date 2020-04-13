@@ -67,14 +67,20 @@ Route::apiResource('enrolleds', 'Schools\EnrolledController', ['only' => [
 Route::get('groups/datatable', 'Schools\GroupController@dataTable');
 Route::get('groups/dependences', 'Schools\GroupController@dependences');
 Route::get('groups/getTeacher', 'Schools\GroupController@getTeacher');
+// Estudiantes del grupo
 Route::get('groups/groupStudentList/{group_id}', 'Schools\GroupController@groupStudentList');
 Route::post('groups/removeStudent/{group_id}', 'Schools\GroupController@removeStudent');
 Route::post('groups/studentList/{group_id}', 'Schools\GroupController@studentList');
 Route::post('groups/assignStudentsGroup', 'Schools\GroupController@assignStudentsGroup');
+// Asignaturas del grupo
 Route::get('groups/subjectStudentList/{group_id}', 'Schools\GroupController@subjectStudentList');
 Route::post('groups/removeSubject/{group_id}', 'Schools\GroupController@removeSubject');
 Route::post('groups/subjectList', 'Schools\GroupController@subjectList');
 Route::post('groups/assignSubjectsGroup', 'Schools\GroupController@assignSubjectsGroup');
+// Horario del grupo
+Route::get('groups/groupScheduleList/{group_id}', 'Schools\GroupController@groupScheduleList');
+Route::get('groups/getSubjectTeacher/{subject_id}', 'Schools\GroupController@getSubjectTeacher');
+
 
 Route::apiResource('groups', 'Schools\GroupController', ['only' => [
     'index',
@@ -87,6 +93,25 @@ Route::apiResource('groups', 'Schools\GroupController', ['only' => [
 // Cortes
 Route::get('cuts/datatable', 'MasterTables\CutController@dataTable');
 Route::apiResource('cuts', 'MasterTables\CutController', ['only' => [
+    'index',
+    'show',
+    'store',
+    'update',
+    'destroy',
+]]);
+
+// Horario Día
+Route::post('stateScheduleDay/{schedule_day_id}', 'Schools\ScheduleDayController@stateScheduleDay');
+Route::apiResource('scheduleDays', 'Schools\ScheduleDayController', ['only' => [
+    'index',
+    'show',
+    'store',
+    'update',
+    'destroy',
+]]);
+
+// Horario Hora
+Route::apiResource('scheduleHours', 'Schools\ScheduleHourController', ['only' => [
     'index',
     'show',
     'store',

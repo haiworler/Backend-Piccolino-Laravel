@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
          $this->call(PeopleSeeder::class);
          $this->call(ProfileSeeder::class);
          $this->call(UserSeeder::class);
-         $this->call(CostEnrolledSeeder::class);
+         $this->call(DaySeeder::class);
+         $this->call(HourSeeder::class);
 
 
     }

@@ -5,7 +5,7 @@ namespace App\Models\Schools;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\MasterTables\{Neighborhood};
-use App\Models\Schools\{Enrolled,Group,Payment};
+use App\Models\Schools\{Enrolled,Group,Payment,ScheduleHour};
 
 class Headquarter extends Model
 {
@@ -40,5 +40,9 @@ class Headquarter extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+    public function scheduleHours()
+    {
+        return $this->hasMany(ScheduleHour::class);
     }
 }

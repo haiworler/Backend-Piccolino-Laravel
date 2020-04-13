@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Schools;
 
 use App\Http\Controllers\Controller;
-use App\Models\Schools\CostEnrolled;
+use App\Models\Schools\ScheduleHour;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Exception;
 
-class CostEnrolledController extends Controller
+class ScheduleHourController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,10 +45,10 @@ class CostEnrolledController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Schools\CostEnrolled  $costEnrolled
+     * @param  \App\Models\Schools\ScheduleHour  $scheduleHour
      * @return \Illuminate\Http\Response
      */
-    public function show(CostEnrolled $costEnrolled)
+    public function show(ScheduleHour $scheduleHour)
     {
         //
     }
@@ -53,10 +56,10 @@ class CostEnrolledController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Schools\CostEnrolled  $costEnrolled
+     * @param  \App\Models\Schools\ScheduleHour  $scheduleHour
      * @return \Illuminate\Http\Response
      */
-    public function edit(CostEnrolled $costEnrolled)
+    public function edit(ScheduleHour $scheduleHour)
     {
         //
     }
@@ -65,10 +68,10 @@ class CostEnrolledController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Schools\CostEnrolled  $costEnrolled
+     * @param  \App\Models\Schools\ScheduleHour  $scheduleHour
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CostEnrolled $costEnrolled)
+    public function update(Request $request, ScheduleHour $scheduleHour)
     {
         //
     }
@@ -76,11 +79,16 @@ class CostEnrolledController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Schools\CostEnrolled  $costEnrolled
+     * @param  \App\Models\Schools\ScheduleHour  $scheduleHour
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CostEnrolled $costEnrolled)
+    public function destroy(ScheduleHour $scheduleHour)
     {
-        //
+        try {
+            $scheduleHour->delete();
+        } catch (Exception $e) {
+            return ($this->errorResponse($e->getMessage(), 422));
+        }
+        return ($this->successResponse($scheduleHour, 200));
     }
 }

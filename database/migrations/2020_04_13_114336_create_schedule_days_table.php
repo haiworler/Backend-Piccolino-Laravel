@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSchedulesTable extends Migration
+class CreateScheduleDaysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,23 +13,18 @@ class CreateSchedulesTable extends Migration
      */
     public function up()
     {
-        Schema::create('schedules', function (Blueprint $table) {
+        Schema::create('schedule_days', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('name');
             $table->unsignedBigInteger('group_id');
-            $table->unsignedBigInteger('subject_id');
-            $table->unsignedBigInteger('people_id');
-            $table->date('date');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->unsignedBigInteger('day_id');
             $table->boolean('enabled')->default(true);
-            $table->softDeletes();
+            //$table->softDeletes();
             $table->timestamps();
         });
-
-        Schema::table('schedules', function (Blueprint $table) {
+        Schema::table('schedule_days', function (Blueprint $table) {
             $table->foreign('group_id')->references('id')->on('groups');
-            $table->foreign('subject_id')->references('id')->on('subjects');
-            $table->foreign('people_id')->references('id')->on('people');
+            $table->foreign('day_id')->references('id')->on('days');
         });
     }
 
@@ -40,6 +35,6 @@ class CreateSchedulesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('schedules');
+        Schema::dropIfExists('schedule_days');
     }
 }

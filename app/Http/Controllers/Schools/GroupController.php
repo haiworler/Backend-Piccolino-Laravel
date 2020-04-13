@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Schools;
 
 use App\Http\Controllers\Controller;
-use App\Models\Schools\{Group, Enrolled,Subject};
+use App\Models\Schools\{Group, Enrolled, Subject, ScheduleDay};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -159,6 +159,8 @@ class GroupController extends Controller
         $controllers = [
             'Schools\HeadquarterController' => ['headquarters', 'index'],
             'Schools\SemesterController' => ['semesters', 'index'],
+            'Schools\DayController' => ['days', 'index'],
+            'Schools\HourController' => ['hours', 'index'],
         ];
         $response = $this->jsonResource($controllers);
         return $response;
@@ -197,6 +199,10 @@ class GroupController extends Controller
             return ($this->errorResponse($e->getMessage(), 422));
         }
     }
+
+    /**
+     * ///////////////////// Estudiantes /////////////////////////
+     */
 
     /**
      * Obtiene la lista de los estudiantes pertenecientes al grupo
@@ -260,6 +266,10 @@ class GroupController extends Controller
     }
 
     /**
+     * ///////////////////// Asignaturas /////////////////////////
+     */
+
+    /**
      * Obtiene la lista de asignatura pertenecientes al grupo
      */
     public function subjectStudentList(Request $request, $id)
@@ -269,7 +279,7 @@ class GroupController extends Controller
         return  $studentList;
     }
 
-     /**
+    /**
      * Remove la asignatura del grupo
      */
     public function removeSubject(Request $request, $id)
@@ -283,7 +293,7 @@ class GroupController extends Controller
         return ($this->successResponse($group, 200));
     }
 
-        /**
+    /**
      * Muestra la lista de asignaturas   que aun no hacen 
      * parte del grupo
      */
@@ -300,7 +310,7 @@ class GroupController extends Controller
     }
 
 
-        /**
+    /**
      * Asigna las asignatuas selecionado sl grupo indicado
      */
     public function assignSubjectsGroup(Request $request)
@@ -318,4 +328,27 @@ class GroupController extends Controller
         return ($this->showWithRelatedModels($group, 200));
     }
 
+    /**
+     * ///////////////////// Horario ////////////
+     */
+
+     /**
+     * Obtiene la lista de los estudiantes pertenecientes al grupo
+     */
+    public function groupScheduleList(Request $request, $id)
+    {
+        $studentList = Group::with('scheduleDays.scheduleHours.hour', 'scheduleDays.day','scheduleDays.scheduleHours.subject','scheduleDays.scheduleHours.people','scheduleDays.scheduleHours.headquarter')->where('id', $id)
+            ->first();
+        return  $studentList;
+    }
+
+     /**
+     * Obtiene la lista de los maestros que  pertenecientes a la asignatura
+     */
+    public function getSubjectTeacher(Request $request, $id)
+    {
+        $subjects = Subject::with('people')->where('id', $id)
+            ->first();
+        return  $subjects;
+    }
 }

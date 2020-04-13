@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Schools;
 
 use App\Http\Controllers\Controller;
-use App\Models\Schools\Schedule;
+use App\Models\Schools\Hour;
 use Illuminate\Http\Request;
 
-class ScheduleController extends Controller
+class HourController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,8 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        //
+        $hours = Hour::all()->where('enabled', '1');
+        return $this->showAll($hours);
     }
 
     /**
@@ -42,10 +43,10 @@ class ScheduleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Schools\Schedule  $schedule
+     * @param  \App\Models\Schools\Hour  $hour
      * @return \Illuminate\Http\Response
      */
-    public function show(Schedule $schedule)
+    public function show(Hour $hour)
     {
         //
     }
@@ -53,10 +54,10 @@ class ScheduleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Schools\Schedule  $schedule
+     * @param  \App\Models\Schools\Hour  $hour
      * @return \Illuminate\Http\Response
      */
-    public function edit(Schedule $schedule)
+    public function edit(Hour $hour)
     {
         //
     }
@@ -65,10 +66,10 @@ class ScheduleController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Schools\Schedule  $schedule
+     * @param  \App\Models\Schools\Hour  $hour
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Schedule $schedule)
+    public function update(Request $request, Hour $hour)
     {
         //
     }
@@ -76,10 +77,10 @@ class ScheduleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Schools\Schedule  $schedule
+     * @param  \App\Models\Schools\Hour  $hour
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Schedule $schedule)
+    public function destroy(Hour $hour)
     {
         //
     }
