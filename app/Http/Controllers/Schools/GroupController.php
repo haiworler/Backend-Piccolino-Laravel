@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Schools;
 
 use App\Http\Controllers\Controller;
-use App\Models\Schools\{Group, Enrolled};
+use App\Models\Schools\{Group, Enrolled,Subject};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -223,7 +223,8 @@ class GroupController extends Controller
     }
 
     /**
-     * 
+     * Muestra la lista de estudiantes matriculas en el mismo semestre y que aun no hacen 
+     * parte del grupo
      */
     public function studentList(Request $request, $id)
     {
@@ -257,4 +258,64 @@ class GroupController extends Controller
         }
         return ($this->showWithRelatedModels($group, 200));
     }
+
+    /**
+     * Obtiene la lista de asignatura pertenecientes al grupo
+     */
+    public function subjectStudentList(Request $request, $id)
+    {
+        $studentList = Group::with('subjects')->where('id', $id)
+            ->first();
+        return  $studentList;
+    }
+
+     /**
+     * Remove la asignatura del grupo
+     */
+    public function removeSubject(Request $request, $id)
+    {
+        try {
+            $group = Group::find($id);
+            $group->subjects()->detach($request['subject_id']);
+        } catch (Exception $e) {
+            return ($this->errorResponse('No se pudo realizar la operación', 422));
+        }
+        return ($this->successResponse($group, 200));
+    }
+
+        /**
+     * Muestra la lista de asignaturas   que aun no hacen 
+     * parte del grupo
+     */
+    public function subjectList(Request $request)
+    {
+        $Query = Subject::where('enabled', 1);
+        if (count($request->get('subjects'))) {
+            foreach ($request->get('subjects') as $subjects_id) {
+                $Query->where('id', '<>', $subjects_id);
+            }
+        }
+        $subjects =  $Query->get();
+        return  $subjects;
+    }
+
+
+        /**
+     * Asigna las asignatuas selecionado sl grupo indicado
+     */
+    public function assignSubjectsGroup(Request $request)
+    {
+
+        try {
+            DB::beginTransaction();
+            $group = Group::find($request['group_id']);
+            $group->subjects()->attach(Array_values($request->get('subjects')));
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            return ($this->errorResponse($e->getMessage() . 'Se presento un error en el sistema', 422));
+        }
+        return ($this->showWithRelatedModels($group, 200));
+    }
+
 }

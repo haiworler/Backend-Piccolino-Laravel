@@ -71,6 +71,11 @@ Route::get('groups/groupStudentList/{group_id}', 'Schools\GroupController@groupS
 Route::post('groups/removeStudent/{group_id}', 'Schools\GroupController@removeStudent');
 Route::post('groups/studentList/{group_id}', 'Schools\GroupController@studentList');
 Route::post('groups/assignStudentsGroup', 'Schools\GroupController@assignStudentsGroup');
+Route::get('groups/subjectStudentList/{group_id}', 'Schools\GroupController@subjectStudentList');
+Route::post('groups/removeSubject/{group_id}', 'Schools\GroupController@removeSubject');
+Route::post('groups/subjectList', 'Schools\GroupController@subjectList');
+Route::post('groups/assignSubjectsGroup', 'Schools\GroupController@assignSubjectsGroup');
+
 Route::apiResource('groups', 'Schools\GroupController', ['only' => [
     'index',
     'show',
