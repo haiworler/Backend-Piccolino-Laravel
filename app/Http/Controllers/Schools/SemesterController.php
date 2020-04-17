@@ -16,9 +16,13 @@ class SemesterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($type = null)
     {
-        $semesters = Semester::all()->where('enabled', '1');
+        if($type){
+            $semesters = Semester::with('cuts')->where('enabled', '1')->get();
+        }else{
+            $semesters = Semester::all()->where('enabled', '1');
+        }
         return $this->showAll($semesters);
     }
 

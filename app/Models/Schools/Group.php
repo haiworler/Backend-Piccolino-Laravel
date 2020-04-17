@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Schools\{Headquarter,Semester,Enrolled,Subject,Assistance,ScheduleDay,Note};
 use App\Models\People\{People};
-
+use App\Models\MasterTables\{Cut};
 class Group extends Model
 {
     // use SoftDeletes;

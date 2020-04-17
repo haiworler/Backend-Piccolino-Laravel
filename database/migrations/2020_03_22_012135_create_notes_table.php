@@ -18,8 +18,11 @@ class CreateNotesTable extends Migration
             $table->string('note');
             $table->text('observations')->nullable();
             $table->unsignedBigInteger('subject_id');
+            $table->string('subject_name');
             $table->unsignedBigInteger('group_id');
+            $table->string('group_name');
             $table->unsignedBigInteger('enrolled_id');
+            $table->unsignedBigInteger('people_id');
             $table->unsignedBigInteger('semester_id');
             $table->unsignedBigInteger('cut_id');
             $table->boolean('enabled')->default(true);
@@ -33,6 +36,7 @@ class CreateNotesTable extends Migration
             $table->foreign('enrolled_id')->references('id')->on('enrolleds');
             $table->foreign('semester_id')->references('id')->on('semesters');
             $table->foreign('cut_id')->references('id')->on('cuts');
+            $table->foreign('people_id')->references('id')->on('people');
         });
     }
 

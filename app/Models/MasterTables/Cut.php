@@ -4,7 +4,7 @@ namespace App\Models\MasterTables;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Schools\{Semester,Note};
+use App\Models\Schools\{Semester,Note,Group};
 
 class Cut extends Model
 {

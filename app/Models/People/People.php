@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\MasterTables\{TypeDocument, Town, Gender, Neighborhood, Occupation, TypePeople};
 use App\User;
-use App\Models\Schools\{Enrolled,Group,Subject,Assistance,Payment,ScheduleHour};
+use App\Models\Schools\{Enrolled,Group,Subject,Assistance,Payment,ScheduleHour,Note};
 
 class People extends Model
 {
@@ -99,5 +99,9 @@ class People extends Model
     public function scheduleHours()
     {
         return $this->hasMany(ScheduleHour::class);
+    }
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
     }
 }

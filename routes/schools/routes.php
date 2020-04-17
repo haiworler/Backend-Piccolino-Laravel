@@ -118,3 +118,19 @@ Route::apiResource('scheduleHours', 'Schools\ScheduleHourController', ['only' =>
     'update',
     'destroy',
 ]]);
+
+
+// Notas
+Route::get('notes/dependences', 'Schools\NoteController@dependences');
+Route::get('notes/datatable', 'Schools\NoteController@dataTable');
+Route::get('notes/getGroupTeacher', 'Schools\NoteController@getGroupTeacher');
+Route::get('notes/getSubjectTeacher', 'Schools\NoteController@getSubjectTeacher');
+Route::get('notes/getPeopleGroupNote', 'Schools\NoteController@getPeopleGroupNote');
+Route::get('notes/getPeopleGroupNoteUpdate', 'Schools\NoteController@getPeopleGroupNoteUpdate');
+Route::apiResource('notes', 'Schools\NoteController', ['only' => [
+    'index',
+    'show',
+    'store',
+    'update',
+    'destroy',
+]]);

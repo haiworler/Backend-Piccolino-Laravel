@@ -4,8 +4,10 @@ namespace App\Models\Schools;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Schools\{Group,Subject,Enrolled,Semester};
+use App\Models\Schools\{Group,Subject,Enrolled,Semester,NoteCompetition};
 use App\Models\MasterTables\{Cut};
+use App\Models\People\{People};
+
 
 class Note extends Model
 {
@@ -16,8 +18,11 @@ class Note extends Model
         'note',
         'observations',
         'subject_id',
+        'subject_name',
         'group_id',
+        'group_name',
         'enrolled_id',
+        'people_id',
         'semester_id',
         'cut_id',
         'enabled'
@@ -47,4 +52,15 @@ class Note extends Model
     {
         return $this->belongsTo(Cut::class);
     }
+
+    public function people()
+    {
+        return $this->belongsTo(People::class);
+    }
+
+    public function noteCompetitions()
+    {
+        return $this->hasMany(NoteCompetition::class);
+    }
+
 }
