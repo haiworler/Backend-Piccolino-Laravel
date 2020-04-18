@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
          $this->call(GradesSeeder::class);
          $this->call(CutSeeder::class);
          $this->call(PeopleSeeder::class);
+         $this->call(ModuleSeeder::class);
          $this->call(ProfileSeeder::class);
          $this->call(UserSeeder::class);
          $this->call(DaySeeder::class);

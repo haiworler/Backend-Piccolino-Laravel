@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Security;
 
 use App\Http\Controllers\Controller;
-use App\Models\Security\{Profile};
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use Illuminate\Support\Facades\Hash;
 
-class ProfileController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +19,8 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $profiles = Profile::all()->where('enabled', '1');
-        return $this->showAll($profiles);
+        $users = User::all()->where('enabled', '1');
+        return $this->showAll($users);
     }
 
     /**
@@ -41,33 +42,36 @@ class ProfileController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:profiles',
+            'name' => 'required',
+            'email' => 'required|unique:users',
+            'password' => 'required',
+            'profile_id' => 'required',
+            'people_id' => 'required',
         ]);
         if ($validator->fails()) {
             return ($this->errorResponse($validator->errors(), 422));
         }
         try {
-            $profile = new Profile();
+            $user = new User();
+            $request['password'] = Hash::make($request->input('password'));
             DB::beginTransaction();
-            $profile = $profile->create($request->all());
-            if(count($request->input('modules'))){
-                $profile->modules()->attach(Array_values($request->get('modules')));
-            }
+            $user = $user->create($request->all());
+            $user->people()->attach($request->input('people_id'));
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
             return ($this->errorResponse($e->getMessage() . 'Se presento un error en el sistema', 422));
         }
-        return ($this->showWithRelatedModels($profile, 200));
+        return ($this->showWithRelatedModels($user, 200));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Security\Profile  $profile
+     * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(Profile $profile)
+    public function show(User $user)
     {
         //
     }
@@ -75,10 +79,10 @@ class ProfileController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Security\Profile  $profile
+     * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(Profile $profile)
+    public function edit(User $user)
     {
         //
     }
@@ -87,68 +91,71 @@ class ProfileController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Security\Profile  $profile
+     * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Profile $profile)
+    public function update(Request $request, User $user)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'email' => 'required|unique:users,email,' . $user->id,
+            'password' => 'required',
+            'profile_id' => 'required',
+            'people_id' => 'required',
         ]);
         if ($validator->fails()) {
             return ($this->errorResponse($validator->errors(), 422));
         }
+        if ($request['password'] != $user->password) {
+            $request['password'] = Hash::make($request->input('password'));
+        }
         try {
             DB::beginTransaction();
-             $profile->update($request->all());
-            if(count($request->input('modules'))){
-                $profile->modules()->sync(Array_values($request->get('modules')));
-            }
+            $user->update($request->all());
+            $user->people()->sync($request->input('people_id'));
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
             return ($this->errorResponse($e->getMessage() . 'Se presento un error en el sistema', 422));
         }
-        return ($this->showWithRelatedModels($profile, 200));
+        return ($this->showWithRelatedModels($user, 200));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Security\Profile  $profile
+     * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Profile $profile)
+    public function destroy(User $user)
     {
         try {
-            $profile->delete();
+            $user->delete();
         } catch (Exception $e) {
             return ($this->errorResponse($e->getMessage(), 422));
         }
-        return ($this->successResponse($profile, 200));
+        return ($this->successResponse($user, 200));
     }
 
-
-     /**
+    /**
      * Para el listar de los semestres
      */
     public function dataTable(Request $request)
     {
-        $profiles = Profile::with('modules')
-        ->where('name', 'like', '%' . $request->term . '%')
+        $users = User::with('profile.modules', 'people')
+            ->where('name', 'like', '%' . $request->term . '%')
             ->paginate($request->limit)
             ->toArray();
-        return $this->showDatatable($profiles);
+        return $this->showDatatable($users);
     }
 
-
-      /**
+    /**
      * 
      */
     public function dependences()
     {
         $controllers = [
-            'Security\ModuleController' => ['modules', 'index',1],
+            'Security\ProfileController' => ['profiles', 'index'],
         ];
         $response = $this->jsonResource($controllers);
         return $response;

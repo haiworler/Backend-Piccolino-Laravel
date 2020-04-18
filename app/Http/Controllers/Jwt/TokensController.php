@@ -24,7 +24,7 @@ class TokensController extends Controller
             if ($validator->fails()) {return ($this->errorResponse('Las credenciales no estan en un formato correcto', 422));}
             $token = JWTAuth::attempt($credentials);
             if ($token) {
-                return ($this->successResponse(['success' => true, 'token' => $token, 'user' => User::with('profile', 'people')->where('email', $credentials['email'])->first()]));
+                return ($this->successResponse(['success' => true, 'token' => $token, 'user' => User::with('profile.modules', 'people')->where('email', $credentials['email'])->first()]));
             } else {
                 return ($this->errorResponse('El usuario y contraseña no son correctos', 422));
             }
