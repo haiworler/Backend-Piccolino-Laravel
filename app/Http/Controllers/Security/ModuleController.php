@@ -16,7 +16,7 @@ class ModuleController extends Controller
     public function index($type = null)
     {
         if($type){
-            $modules = Module::whereIn('id',[2,3,5,6,7,9,10,11,12,13,15,16,18,19])->where('enabled','1')->get();
+            $modules = Module::whereIn('id',[2,3,5,6,7,8,13,15,16,17,20])->where('enabled','1')->get();
         }else{
             $modules = Module::all()->where('enabled', '1');
         }

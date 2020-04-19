@@ -163,4 +163,21 @@ class PeopleController extends Controller
         $response = $this->jsonResource($controllers);
         return $response;
     }
+
+    /**
+     * COnsulta a las personas segun el tipo o el estado
+     */
+    public function getPeopleExport(Request $request)
+    {
+        
+        $people = People::with('typeDocument', 'town', 'gender', 'neighborhood', 'occupation', 'typePeople');
+        if($request->input('enabled') && $request->input('enabled') != 'null'){
+            $people->where('enabled', $request->input('enabled'));
+        }
+        if($request->input('type_people_id') && $request->input('type_people_id') != "null"){
+            $people->where('type_people_id', $request->input('type_people_id'));
+        }
+        $Query = $people->get();
+        return $this->showAll($Query);
+    }
 }

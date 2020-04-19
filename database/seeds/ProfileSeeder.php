@@ -13,7 +13,7 @@ class ProfileSeeder extends Seeder
     public function run()
     {
        $profile = Profile::create(['name' => 'Administrador']);
-       $profile->modules()->attach([2,3,5,6,7,9,10,11,12,13,15,16,18,19]);
+       $profile->modules()->attach([2,3,5,6,7,8,13,15,16,17,20]);
         Profile::create(['name' => 'Maestro']);
         Profile::create(['name' => 'Estudiante']);
     }

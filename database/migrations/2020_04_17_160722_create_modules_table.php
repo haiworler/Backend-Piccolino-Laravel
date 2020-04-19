@@ -20,6 +20,7 @@ class CreateModulesTable extends Migration
             $table->string('icon')->nullable();
             $table->string('class')->nullable();
             $table->boolean('enabled')->default(true);
+            $table->boolean('abstract')->default(false)->nullable();
             $table->unsignedBigInteger('module_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

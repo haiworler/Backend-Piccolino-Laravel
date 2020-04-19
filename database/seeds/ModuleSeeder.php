@@ -19,6 +19,7 @@ class ModuleSeeder extends Seeder
                 'icon' => 'dashboard',
                 'class' => '',
                 'module_id' => null,
+                'abstract'=> true
             ]
         );
         Module::create( //2
@@ -84,9 +85,10 @@ class ModuleSeeder extends Seeder
             [
                 'name' => 'Inscripciones',
                 'route' => '/enrollments',
-                'icon' => 'dashboard',
+                'icon' => 'vsm-icon fa fa-id-card icon-gradient bg-grow-early',
                 'class' => '',
                 'module_id' => null,
+                'abstract'=> true
             ]
         );
 
@@ -142,6 +144,7 @@ class ModuleSeeder extends Seeder
                 'icon' => 'dashboard',
                 'class' => '',
                 'module_id' => null,
+                'abstract'=> true
             ]
         );
         Module::create( //15
@@ -166,9 +169,10 @@ class ModuleSeeder extends Seeder
             [
                 'name' => 'Seguridad',
                 'route' => '/security',
-                'icon' => 'how_to_reg',
+                'icon' => 'vsm-icon fa fa-unlock-alt icon-gradient bg-arielle-smile',
                 'class' => '',
                 'module_id' => null,
+                'abstract'=> true
             ]
         );
         Module::create( //18
@@ -189,5 +193,26 @@ class ModuleSeeder extends Seeder
                 'module_id' => 17,
             ]
         );
+        Module::create( //20
+            [
+                'name' => 'Informes',
+                'route' => '/export',
+                'icon' => 'vsm-icon fa fa-files-o icon-gradient bg-arielle-smile',
+                'class' => '',
+                'module_id' => null,
+                'abstract'=> true
+            ]
+        );
+        Module::create( //21
+            [
+                'name' => 'Informe de personas',//Informe de estudiantes
+                'route' => '/export/student',
+                'icon' => 'vsm-icon fa fa-unlock-alt icon-gradient bg-arielle-smile',
+                'class' => '',
+                'module_id' => 20,
+            ]
+        );
+        
+
     }
 }

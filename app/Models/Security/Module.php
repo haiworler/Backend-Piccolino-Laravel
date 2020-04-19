@@ -17,6 +17,7 @@ class Module extends Model
         'icon',
         'class',
         'module_id',
+        'abstract',
         'enabled',
     ];
 
@@ -28,7 +29,7 @@ class Module extends Model
         return $this->belongsTo(Module::class,'module_id');
     }
 
-    public function modules(){
+    public function children(){
         return $this->hasMany(Module::class,'module_id');
     }
 }

@@ -10,3 +10,6 @@ Route::apiResource('people', 'People\PeopleController', ['only' => [
     'update',
     'destroy',
 ]]);
+
+// Para los Informes
+Route::get('peopleExports', 'People\PeopleController@getPeopleExport');
