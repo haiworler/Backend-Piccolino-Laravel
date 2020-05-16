@@ -17,9 +17,13 @@ class GroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($type = null)
     {
-        $groups = Group::all()->where('enabled', '1');
+        if($type){
+            $groups = Group::with('semester')->get();
+        }else{
+            $groups = Group::all()->where('enabled', '1');
+        }
         return $this->showAll($groups);
     }
 
@@ -350,5 +354,18 @@ class GroupController extends Controller
         $subjects = Subject::with('people')->where('id', $id)
             ->first();
         return  $subjects;
+    }
+
+
+      /**
+     * 
+     */
+    public function dependencesExport()
+    {
+        $controllers = [
+            'Schools\SemesterController' => ['semesters', 'index',2],
+        ];
+        $response = $this->jsonResource($controllers);
+        return $response;
     }
 }

@@ -18,9 +18,13 @@ class SemesterController extends Controller
      */
     public function index($type = null)
     {
-        if($type){
+        if ($type == 2) {
+            $semesters = Semester::with('cuts','groups')->get();
+            return $this->showAll($semesters);
+        }
+        if ($type) {
             $semesters = Semester::with('cuts')->where('enabled', '1')->get();
-        }else{
+        } else {
             $semesters = Semester::all()->where('enabled', '1');
         }
         return $this->showAll($semesters);
@@ -48,7 +52,7 @@ class SemesterController extends Controller
             'start_date' => 'required',
             'code' => 'required|unique:subjects',
             'end_date' => 'required',
-            'cuts'=> 'required'
+            'cuts' => 'required'
 
         ]);
         $cammbioNombres = array(
@@ -142,7 +146,7 @@ class SemesterController extends Controller
         return $this->showDatatable($subjects);
     }
 
-      /**
+    /**
      * 
      */
     public function dependences()

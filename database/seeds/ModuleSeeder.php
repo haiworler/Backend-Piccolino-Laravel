@@ -209,9 +209,18 @@ class ModuleSeeder extends Seeder
                 'route' => '/export/student',
                 'icon' => 'vsm-icon fa fa-unlock-alt icon-gradient bg-arielle-smile',
                 'class' => '',
+                'module_id' => 20,            ]
+        );
+        Module::create( //22
+            [
+                'name' => 'Informe de grupos',//Informe de estudiantes
+                'route' => '/export/group',
+                'icon' => 'vsm-icon fa fa-unlock-alt icon-gradient bg-arielle-smile',
+                'class' => '',
                 'module_id' => 20,
             ]
         );
+      
         
 
     }
