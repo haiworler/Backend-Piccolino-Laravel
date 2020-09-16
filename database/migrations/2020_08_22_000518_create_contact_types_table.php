@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGroupEnrolledTable extends Migration
+class CreateContactTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,12 @@ class CreateGroupEnrolledTable extends Migration
      */
     public function up()
     {
-        Schema::create('enrolled_group', function (Blueprint $table) {
+        Schema::create('contact_types', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('group_id');
-            $table->unsignedBigInteger('enrolled_id');
+            $table->string('name');
             $table->boolean('enabled')->default(true);
             $table->softDeletes();
             $table->timestamps();
-        });
-
-        Schema::table('enrolled_group', function (Blueprint $table) {
-            $table->foreign('group_id')->references('id')->on('groups');
-            $table->foreign('enrolled_id')->references('id')->on('enrolleds');
         });
     }
 
@@ -35,6 +29,6 @@ class CreateGroupEnrolledTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('enrolled_group');
+        Schema::dropIfExists('contact_types');
     }
 }

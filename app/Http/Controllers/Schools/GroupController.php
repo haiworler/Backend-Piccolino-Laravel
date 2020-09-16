@@ -178,8 +178,19 @@ class GroupController extends Controller
     {
 
         $people = People::with('typeDocument', 'town', 'gender', 'neighborhood', 'occupation', 'typePeople')
-            ->whereIn('type_people_id', [4, 5])->where('enabled', 1);
-        $people->where('document_number', 'like', '%' . $request->term . '%');
+            ->whereIn('type_people_id', [3,4, 5,6,7,8,9])->where('enabled', 1);
+            $people->where(function ($query) use ($request) {
+                $query->where('names', 'like', '%' . $request->term . '%')
+                ->orWhere('surnames', 'like', '%' . $request->term . '%')
+                    ->orWhere('document_number', 'like', '%' . $request->term . '%')
+                    ->orWhere('phone', 'like', '%' . $request->term . '%')
+                    ->orWhere('cell', 'like', '%' . $request->term . '%')
+                    ->orWhere('email', 'like', '%' . $request->term . '%')
+                    ->orWhere('address_residence', 'like', '%' . $request->term . '%')
+                    ->orWhere('rh', 'like', '%' . $request->term . '%')
+                    ->orWhere('eps', 'like', '%' . $request->term . '%')
+                    ->orWhere('history', 'like', '%' . $request->term . '%');
+            });
         $Query = $people->paginate($request->limit)
             ->toArray();
         return $Query;

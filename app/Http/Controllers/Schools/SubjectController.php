@@ -152,7 +152,7 @@ class SubjectController extends Controller
      */
     public function getTeachers()
     {
-        $peoples = People::where('enabled', '1')->where('type_people_id', 4)->get();
+        $peoples = People::where('enabled', '1')->whereIn('type_people_id', [3,4,5,6,7,8,9])->get();
         return $peoples;
     }
 

@@ -5,6 +5,7 @@ namespace App\Models\MasterTables;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\People\{People};
+use App\Models\MasterTables\{Position};
 
 class Occupation extends Model
 {
@@ -12,6 +13,8 @@ class Occupation extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
+        'id',
+        'position_id',
         'name',
         'enabled',
     ];
@@ -19,5 +22,9 @@ class Occupation extends Model
     public function people()
     {
         return $this->hasMany(People::class);
+    }
+    public function position()
+    {
+        return $this->belongsTo(Position::class);
     }
 }

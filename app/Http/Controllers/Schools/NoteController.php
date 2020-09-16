@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Schools;
 
 use App\Http\Controllers\Controller;
-use App\Models\Schools\{Note, Group, Subject, Enrolled,NoteCompetition};
+use App\Models\Schools\{Note, Group, Subject, Enrolled, NoteCompetition};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -55,11 +55,19 @@ class NoteController extends Controller
             return ($this->errorResponse($validator->errors(), 422));
         }
         try {
+            $headers = getallheaders();
             $note = new Note();
             DB::beginTransaction();
             $note = $note->create($request->all());
-            if(count($request->input('competencies'))){
-                foreach($request->input('competencies') as $competencie){
+            /**
+             * Registra la asignatura de la persina
+             */
+            $this->registerHistorySubjects(['people_id' => $headers['people_id'], 'history_type_id' => 3, 'process' => $note->subject_name, 'subject_id' => $note->subject_id, 'semester_id' => $note->semester_id]);
+            /**
+             * Registra las competencias
+             */
+            if (count($request->input('competencies'))) {
+                foreach ($request->input('competencies') as $competencie) {
                     $note->noteCompetitions()->create($competencie);
                 }
             }
@@ -119,11 +127,11 @@ class NoteController extends Controller
         try {
             DB::beginTransaction();
             $note = $note->update($request->all());
-            if(count($request->input('competencies'))){
-                foreach($request->input('competencies') as $competencie){
+            if (count($request->input('competencies'))) {
+                foreach ($request->input('competencies') as $competencie) {
                     $noteCompetition = NoteCompetition::find($competencie['id']);
-                    if($noteCompetition){
-                      $noteCompetition->update($competencie);
+                    if ($noteCompetition) {
+                        $noteCompetition->update($competencie);
                     }
                 }
             }
@@ -148,11 +156,11 @@ class NoteController extends Controller
             $note->noteCompetitions()->delete();
             $note->delete();
             DB::commit();
-          } catch (Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return ($this->errorResponse($e->getMessage(), 422));
-          }
-          return ($this->successResponse($note, 200));
+        }
+        return ($this->successResponse($note, 200));
     }
 
     /**
@@ -217,7 +225,7 @@ class NoteController extends Controller
         return  $enrolleds;
     }
 
-      /**
+    /**
      * Busca los estudiantes del grupo que ya tengan calificación
      */
     public function getPeopleGroupNoteUpdate(Request $request)
@@ -233,5 +241,4 @@ class NoteController extends Controller
             ->get();
         return  $enrolleds;
     }
-
 }

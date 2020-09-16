@@ -26,10 +26,10 @@ class Module extends Model
     }
 
     public function module(){
-        return $this->belongsTo(Module::class,'module_id');
+        return $this->hasMany(Module::class,'module_id');
     }
 
     public function children(){
-        return $this->hasMany(Module::class,'module_id');
+        return $this->hasMany(Module::class,'module_id')->with('children');
     }
 }

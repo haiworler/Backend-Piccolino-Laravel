@@ -12,10 +12,14 @@ class TypePeopleSeeder extends Seeder
      */
     public function run()
     {
-        TypePeople::create(['name' => 'Estudiante']);
-        TypePeople::create(['name' => 'Egresado']);
-        TypePeople::create(['name' => 'Voluntario(General)']);
-        TypePeople::create(['name' => 'Voluntario(Maestro)']);
+        TypePeople::create(['name' => 'Maestr@/Estudiante']);
+        TypePeople::create(['name' => 'Egresad@']);
+        TypePeople::create(['name' => 'Persona natural']);
+        TypePeople::create(['name' => 'Voluntario/a']);
+        TypePeople::create(['name' => 'Maestr@/Voluntario']);
+        TypePeople::create(['name' => 'Secretari@']);
+        TypePeople::create(['name' => 'Coordinador/a']);
+        TypePeople::create(['name' => 'Contador/a']);
         TypePeople::create(['name' => 'Representante legal']);
     }
 }

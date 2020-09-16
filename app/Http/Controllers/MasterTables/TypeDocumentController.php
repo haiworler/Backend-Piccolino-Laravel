@@ -5,6 +5,9 @@ namespace App\Http\Controllers\MasterTables;
 use App\Http\Controllers\Controller;
 use App\Models\MasterTables\TypeDocument;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class TypeDocumentController extends Controller
 {
@@ -19,15 +22,7 @@ class TypeDocumentController extends Controller
         return $this->showAll($typeDocuments);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+   
 
     /**
      * Store a newly created resource in storage.
@@ -37,7 +32,13 @@ class TypeDocumentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $typeDocument = new TypeDocument();
+            $typeDocument->create($request->all());
+        } catch (Exception $e) {
+            return ($this->errorResponse('Se presento un error en el sistema', 422));
+        }
+        return ($this->showWithRelatedModels($typeDocument, 200));
     }
 
     /**
@@ -51,16 +52,7 @@ class TypeDocumentController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\MasterTables\TypeDocument  $typeDocument
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(TypeDocument $typeDocument)
-    {
-        //
-    }
+  
 
     /**
      * Update the specified resource in storage.
@@ -71,7 +63,12 @@ class TypeDocumentController extends Controller
      */
     public function update(Request $request, TypeDocument $typeDocument)
     {
-        //
+        try {
+            $typeDocument->update($request->all());
+        } catch (Exception $e) {
+            return ($this->errorResponse('Se presento un error en el sistema', 422));
+        }
+        return ($this->showWithRelatedModels($typeDocument, 200));
     }
 
     /**
@@ -82,6 +79,22 @@ class TypeDocumentController extends Controller
      */
     public function destroy(TypeDocument $typeDocument)
     {
-        //
+        try {
+            $typeDocument->delete();
+        } catch (Exception $e) {
+            return ($this->errorResponse($e->getMessage(), 422));
+        }
+        return ($this->successResponse($typeDocument, 200));
+    }
+
+     /**
+     * Para el listar de los documentos de identificación
+     */
+    public function dataTable(Request $request)
+    {
+        $typeDocuments = TypeDocument::Where('name', 'like', '%' . $request->term . '%')
+            ->paginate($request->limit)
+            ->toArray();
+        return $this->showDatatable($typeDocuments);
     }
 }

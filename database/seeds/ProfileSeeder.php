@@ -12,9 +12,9 @@ class ProfileSeeder extends Seeder
      */
     public function run()
     {
-       $profile = Profile::create(['name' => 'Administrador']);
-       $profile->modules()->attach([2,3,5,6,7,8,13,15,16,17,20]);
-        Profile::create(['name' => 'Maestro']);
-        Profile::create(['name' => 'Estudiante']);
+        $profile = Profile::create(['name' => 'Administrador']);
+        $profile->modules()->attach([1,14,15,17,18,19,20,25,27,28,29,32]);
+        Profile::create(['name' => 'Maestr@/Estudiante']);
+        Profile::create(['name' => 'Maestr@/Voluntario']);
     }
 }

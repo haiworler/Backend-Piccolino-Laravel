@@ -29,6 +29,10 @@ class DatabaseSeeder extends Seeder
          $this->call(UserSeeder::class);
          $this->call(DaySeeder::class);
          $this->call(HourSeeder::class);
+         $this->call(ContactTypeSeeder::class);
+         $this->call(TrainingTypeSeeder::class);
+         $this->call(CategoryDocumentSeeder::class);
+         $this->call(HistoryTypeSeeder::class);
 
 
     }

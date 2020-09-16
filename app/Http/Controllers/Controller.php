@@ -6,9 +6,9 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-use App\Traits\{ApiResponserTrait,JsonResponseTrait};
+use App\Traits\{ApiResponserTrait,JsonResponseTrait,HistoryTrait};
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests,ApiResponserTrait,JsonResponseTrait;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests,ApiResponserTrait,JsonResponseTrait,HistoryTrait;
 }

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\MasterTables;
 
 use App\Http\Controllers\Controller;
-use App\Models\MasterTables\Country;
+use App\Models\MasterTables\{Country,Department};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Exception;
+
 
 class CountryController extends Controller
 {
@@ -19,15 +22,7 @@ class CountryController extends Controller
         return $this->showAll($countries);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -37,7 +32,15 @@ class CountryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $country = new Country();
+            DB::transaction(function() use ($request, &$country){
+                $country->create($request->all());
+            });
+            return ($this->showWithRelatedModels($country, 200));
+        }catch(Exception $e){
+            return ($this->errorResponse($e->getMessage(), 422));
+        }
     }
 
     /**
@@ -71,7 +74,15 @@ class CountryController extends Controller
      */
     public function update(Request $request, Country $country)
     {
-        //
+        try{
+            DB::transaction(function() use ($request, &$country){
+                $country->update($request->all());
+            });
+        }catch(Exception $e){
+            return ($this->errorResponse($e->getMessage(), 422));
+        }
+
+        return ($this->showWithRelatedModels($country, 200));
     }
 
     /**
@@ -82,6 +93,43 @@ class CountryController extends Controller
      */
     public function destroy(Country $country)
     {
-        //
+        try{
+            DB::transaction(function() use (&$country) {
+                $country->delete();
+            });
+            return ($this->successResponse($country, 200));
+        }
+        catch(Exception $e){
+            return ($this->errorResponse($e->getMessage(), 422));
+        }
+    }
+
+     /**
+     * Paises - Datatable
+     * Listado, apto para dataTable
+     * Consula los datos del recurso los retorna junto a los valores necesarios para la paginacion     *
+     * @group Tablas Maestras
+     * @bodyParam term  Texto Filtros Datos para la realización de filtros, se utiliza un mismo dato para todos los filtros
+     * @return \Illuminate\Http\Response
+     */
+    public function dataTable(Request $request){
+        $countries = Country::
+          where('name', 'like', '%'.$request->term.'%')
+        ->paginate($request->limit)
+        ->toArray();
+        return $this->showDataTable($countries);
+    }
+
+      /**
+     * Paises - Departamentos
+     * Listado de departamentos por país
+     * Consula los datos del recurso los retorna junto a los valores necesarios para la paginacion
+     * @group Tablas Maestras
+     * @bodyParam id Texto required Id del país para la consulta de sus departamentos.
+     * @return \Illuminate\Http\Response
+     */
+    public function departments($id){
+        $departments = Department::where('country_id', $id)->get();
+        return $this->showAll($departments);
     }
 }

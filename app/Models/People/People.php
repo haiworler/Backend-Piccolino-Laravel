@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\MasterTables\{TypeDocument, Town, Gender, Neighborhood, Occupation, TypePeople};
 use App\User;
 use App\Models\Schools\{Enrolled,Group,Subject,Assistance,Payment,ScheduleHour,Note};
+use App\Models\People\{Document,AcademicInformation,History,Contact};
 
 class People extends Model
 {
@@ -15,6 +16,8 @@ class People extends Model
 
     protected $fillable = [
         'id',
+        'imagen',
+        'arrival_date',
         'names',
         'surnames',
         'type_document_id',
@@ -35,7 +38,11 @@ class People extends Model
         'level_sisben',
         'type_people_id',
         'history',
+        'promotion',
+        'date_role_change',
         'enabled',
+        'user_created_at',
+        'user_updated_at'
     ];
 
     public function typeDocument()
@@ -103,5 +110,23 @@ class People extends Model
     public function notes()
     {
         return $this->hasMany(Note::class);
+    }
+    
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+    public function academicInformations()
+    {
+        return $this->hasMany(AcademicInformation::class);
+    }
+    public function historys()
+    {
+        return $this->hasMany(History::class);
     }
 }

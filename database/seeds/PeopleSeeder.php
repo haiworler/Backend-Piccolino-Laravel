@@ -31,7 +31,7 @@ class PeopleSeeder extends Seeder
             'observations' => null,
             'stratum' => 3,
             'level_sisben' => null,
-            'type_people_id' => 4,
+            'type_people_id' => 5,
             'history' => null,
         ]);                                                                                                                                                                                                                                      
     }

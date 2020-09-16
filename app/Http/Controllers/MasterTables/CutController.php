@@ -75,16 +75,7 @@ class CutController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\MasterTables\Cut  $cut
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Cut $cut)
-    {
-        //
-    }
+   
 
     /**
      * Update the specified resource in storage.
@@ -127,7 +118,7 @@ class CutController extends Controller
      */
     public function dataTable(Request $request)
     {
-        $cut = Cut::orWhere('name', 'like', '%' . $request->term . '%')
+        $cut = Cut::Where('name', 'like', '%' . $request->term . '%')
             ->paginate($request->limit)
             ->toArray();
         return $this->showDatatable($cut);
